@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- Mod Settings -->
   <Brrr.Name>Brrr and Phew</Brrr.Name>
@@ -47,4 +47,5 @@
   <Brrr.RedRecoverSleeping>睡眠、恢复（血量积累）。</Brrr.RedRecoverSleeping>
   <Brrr.RedRecoverResting>休息、恢复（血量积累）。</Brrr.RedRecoverResting>
   <Brrr.UseGaspCE>同时对战斗扩展烟雾吸入做出反应：</Brrr.UseGaspCE>
+  <Brrr.PhewRecoverSwimming>游泳、恢复（中暑）。</Brrr.PhewRecoverSwimming>
 </LanguageData>

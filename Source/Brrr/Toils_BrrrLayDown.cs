@@ -70,7 +70,7 @@ public static class Toils_BrrrLayDown
                 curDriver2.asleep = false;
             }
 
-            if (curDriver2.asleep & gainRestAndHealth && actor2.needs.rest != null)
+            if (curDriver2.asleep && gainRestAndHealth && actor2.needs.rest != null)
             {
                 var restEffectiveness =
                     buildingBed == null ||

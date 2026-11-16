@@ -5,7 +5,7 @@ using Verse.AI;
 
 namespace Brrr;
 
-public class BrrrGlobals
+public static class BrrrGlobals
 {
     public static Region BrrrClosestRegionWithinTemperatureRange(IntVec3 root, Map map, FloatRange tempRange,
         TraverseParms traverseParms, RegionType traversableRegionTypes = RegionType.Set_Passable)

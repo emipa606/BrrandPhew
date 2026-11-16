@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 
@@ -7,8 +8,11 @@ namespace Brrr;
 
 public class JobDriver_PhewRecovery : JobDriver
 {
-    public const TargetIndex BedOrRestSpotIndex = TargetIndex.A;
-    public const TargetIndex SwimSpotIndex = TargetIndex.B;
+    private const TargetIndex BedOrRestSpotIndex = TargetIndex.A;
+    private const TargetIndex SwimSpotIndex = TargetIndex.B;
+    private const float SwimCoolingFactor = 0.1f;
+    private const float SwimCoolingMin = 0.01f;
+    private const float SwimCoolingMax = 0.05f;
 
     private Building_Bed Bed => job.GetTarget(BedOrRestSpotIndex).Thing as Building_Bed;
 
@@ -43,14 +47,11 @@ public class JobDriver_PhewRecovery : JobDriver
     {
         if (IsSwimming)
         {
-            yield return Toils_Goto.GotoCell(SwimSpotIndex, PathEndMode.OnCell);
-            var swimToil = Toils_Goto.GotoCell(SwimSpotIndex, PathEndMode.OnCell);
-            swimToil.tickIntervalAction = _ =>
-            {
-                CheckForSwimmingPose();
-                pawn.mindState.lastSwamTick = GenTicks.TicksGame;
-            };
-            yield return swimToil;
+            var gotoToil = Toils_Goto.GotoCell(SwimSpotIndex, PathEndMode.OnCell);
+            gotoToil.tickIntervalAction = _ => CheckForSwimmingPose();
+            gotoToil.AddFinishAction(CheckForSwimmingPose);
+            yield return gotoToil;
+            yield return MakeSwimToil();
         }
         else
         {
@@ -77,6 +78,66 @@ public class JobDriver_PhewRecovery : JobDriver
         }
 
         return asleep ? "Brrr.PhewRecoverSleeping".Translate() : "Brrr.PhewRecoverResting".Translate();
+    }
+
+    private Toil MakeSwimToil()
+    {
+        var swimToil = ToilMaker.MakeToil("PhewSwim");
+        swimToil.initAction = CheckForSwimmingPose;
+        swimToil.tickIntervalAction = delta =>
+        {
+            CheckForSwimmingPose();
+            if (!job.swimming)
+            {
+                EndJobWith(JobCondition.Incompletable);
+                return;
+            }
+
+            pawn.mindState.lastSwamTick = GenTicks.TicksGame;
+            if (!CoolDownWhileSwimming(delta))
+            {
+                EndJobWith(JobCondition.Succeeded);
+            }
+        };
+        swimToil.defaultCompleteMode = ToilCompleteMode.Never;
+        swimToil.AddFailCondition(() =>
+        {
+            var needs = pawn.needs;
+            if (needs?.food != null && needs.food.CurLevelPercentage < needs.food.PercentageThreshHungry)
+            {
+                return true;
+            }
+
+            return needs?.joy != null && needs.joy.CurLevelPercentage < Settings.JoySev / 100f &&
+                   Settings.AllowJoy;
+        });
+        swimToil.AddFinishAction(() => job.swimming = false);
+        return swimToil;
+    }
+
+    /// <summary>
+    ///     Reduces heatstroke faster than vanilla comfortable-temperature recovery
+    ///     (severity * 0.027, clamped 0.0015-0.015 per 60 ticks).
+    /// </summary>
+    /// <returns>True while the pawn still has heatstroke.</returns>
+    private bool CoolDownWhileSwimming(int delta)
+    {
+        var heatstroke = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Heatstroke);
+        if (heatstroke == null)
+        {
+            return false;
+        }
+
+        var reduction = Mathf.Clamp(heatstroke.Severity * SwimCoolingFactor, SwimCoolingMin, SwimCoolingMax) *
+                        (delta / 60f);
+        if (heatstroke.Severity - reduction <= 0f)
+        {
+            pawn.health.RemoveHediff(heatstroke);
+            return false;
+        }
+
+        heatstroke.Severity -= reduction;
+        return true;
     }
 
     private void CheckForSwimmingPose()

@@ -60,8 +60,7 @@ public class JobGiver_Phew : ThinkNode_JobGiver
         }
 
         // Check for swimming option (Odyssey DLC)
-        if (pawn.Faction == Faction.OfPlayer &&
-            ModLister.GetActiveModWithIdentifier("ludeon.rimworld.royalty", true) != null)
+        if (pawn.Faction == Faction.OfPlayer && ModsConfig.OdysseyActive)
         {
             var waterCell = FindNearestWaterCell(pawn);
             if (waterCell.IsValid)
@@ -93,23 +92,25 @@ public class JobGiver_Phew : ThinkNode_JobGiver
     private static IntVec3 FindNearestWaterCell(Pawn pawn)
     {
         var map = pawn.Map;
-        var maxDistance = 30; // Search radius for water
+        const float maxDistance = 30f;
 
-        for (var i = 0; i < maxDistance; i++)
+        // Radial cells are ordered by distance, so the first valid one is the nearest
+        foreach (var cell in GenRadial.RadialCellsAround(pawn.Position, maxDistance, true))
         {
-            var cells = GenRadial.RadialCellsAround(pawn.Position, i, true);
-            foreach (var cell in cells)
+            if (!cell.InBounds(map) || cell.Fogged(map) || cell.IsForbidden(pawn) || !cell.Standable(map))
             {
-                if (!cell.InBounds(map))
-                {
-                    continue;
-                }
-
-                if (cell.GetTerrain(map).HasTag("Water") && pawn.CanReach(cell, PathEndMode.OnCell, Danger.None))
-                {
-                    return cell;
-                }
+                continue;
             }
+
+            var terrain = cell.GetTerrain(map);
+            if (!terrain.IsWater || terrain.toxicBuildupFactor > 0f ||
+                PawnUtility.KnownDangerAt(cell, map, pawn) ||
+                !pawn.CanReserveAndReach(cell, PathEndMode.OnCell, Danger.None))
+            {
+                continue;
+            }
+
+            return cell;
         }
 
         return IntVec3.Invalid;

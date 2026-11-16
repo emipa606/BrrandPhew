@@ -19,11 +19,11 @@ internal static class MultiplayerSupport
 
         var array = new[]
         {
-            AccessTools.Method(typeof(BrrrGlobals), "GetNearestSafeRoofedCell"),
-            AccessTools.Method(typeof(BrrrGlobals), "GenRnd100"),
-            AccessTools.Method(typeof(BrrrGlobals), "GenNewRRJob"),
+            AccessTools.Method(typeof(BrrrGlobals), nameof(BrrrGlobals.GetNearestSafeRoofedCell)),
+            AccessTools.Method(typeof(BrrrGlobals), nameof(BrrrGlobals.GenRnd100)),
+            AccessTools.Method(typeof(BrrrGlobals), nameof(BrrrGlobals.GenNewRRJob)),
             AccessTools.Method(typeof(JobGiver_Ooh), "TryFindOohCell"),
-            AccessTools.Method(typeof(Toils_BrrrLayDown), "BrrrLayDown")
+            AccessTools.Method(typeof(Toils_BrrrLayDown), nameof(Toils_BrrrLayDown.BrrrLayDown))
         };
         foreach (var methodInfo in array)
         {
@@ -33,8 +33,8 @@ internal static class MultiplayerSupport
 
     private static void FixRNG(MethodInfo method)
     {
-        harmony.Patch(method, new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPre"),
-            new HarmonyMethod(typeof(MultiplayerSupport), "FixRNGPos"));
+        harmony.Patch(method, new HarmonyMethod(typeof(MultiplayerSupport), nameof(FixRNGPre)),
+            new HarmonyMethod(typeof(MultiplayerSupport), nameof(FixRNGPos)));
     }
 
     private static void FixRNGPre()

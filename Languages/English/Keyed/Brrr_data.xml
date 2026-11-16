@@ -32,6 +32,7 @@
   <Brrr.BrrrRecoverResting>resting, recovery (hypothermia).</Brrr.BrrrRecoverResting>
   <Brrr.PhewRecoverSleeping>sleeping, recovery (heatstroke).</Brrr.PhewRecoverSleeping>
   <Brrr.PhewRecoverResting>resting, recovery (heatstroke).</Brrr.PhewRecoverResting>
+  <Brrr.PhewRecoverSwimming>swimming, recovery (heatstroke).</Brrr.PhewRecoverSwimming>
   <Brrr.YukRecoverSleeping>sleeping, recovery (toxic buildup).</Brrr.YukRecoverSleeping>
   <Brrr.YukRecoverResting>resting, recovery (toxic buildup).</Brrr.YukRecoverResting>
   <Brrr.RedRecoverSleeping>sleeping, recovery (bloodrage buildup).</Brrr.RedRecoverSleeping>

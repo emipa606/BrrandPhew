@@ -35,7 +35,7 @@ public class JobDriver_OohSkygaze : JobDriver
             var needs2 = actor.needs;
             var num = needs2 != null ? new float?(needs2.food.CurLevelPercentage) : null;
             var percentageThreshHungry = actor.needs.food.PercentageThreshHungry;
-            return (num.GetValueOrDefault() < percentageThreshHungry) & (num != null);
+            return num.GetValueOrDefault() < percentageThreshHungry && num != null;
         });
         yield return gaze;
     }

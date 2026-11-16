@@ -11,6 +11,7 @@
     <li>1.4</li>
     <li>1.5</li>
     <li>1.6</li>
+    <li>1.7</li>
   </supportedVersions>
   <modDependencies>
     <li>
@@ -112,6 +113,6 @@ German Translation - Trunken
 [*] Use [url=https://github.com/RimSort/RimSort/releases/latest]RimSort[/url] to sort your mods
 [/list] 
 
-[url=https://steamcommunity.com/sharedfiles/filedetails/changelog/2195938471][img]https://img.shields.io/github/v/release/emipa606/BrrandPhew?label=latest%20version&amp;style=plastic&amp;color=9f1111&amp;labelColor=black[/img][/url] | tags: hypothermia, heatstroke</description>
-  <modVersion IgnoreIfNoMatchingField="True">1.6.8</modVersion>
+[url=https://steamcommunity.com/sharedfiles/filedetails/changelog/2195938471][img]https://img.shields.io/github/v/release/emipa606/BrrandPhew?label=latest%20version&amp;style=plastic&amp;color=9f1111&amp;labelColor=black[/img][/url] | heatstroke, hypothermia</description>
+  <modVersion IgnoreIfNoMatchingField="True">1.7.0</modVersion>
 </ModMetaData>
